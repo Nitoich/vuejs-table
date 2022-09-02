@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <script src="https://unpkg.com/vue@3"></script>
+        <script src="js/app.js" type="module"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+
+            #app {
+                display: grid;
+                grid-template-columns: 50% 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div class="users-table">
+                <h1>Пользователи</h1>
+                <smart-table
+                        :columns="this.columnsUserTable"
+                        :rows="this.users"
+                        v-model:selected-rows="this.selectedUser"
+                        @after-select-row="this.getPosts"
+                        :multiple-select="false"
+                        :sticky-header="false"
+                />
+            </div>
+            <div class="posts-table">
+                <h1>Посты пользователя</h1>
+                <smart-table
+                        :columns="this.columnsPostsTable"
+                        :rows="this.posts"
+                        :can-select-row="false"
+                />
+            </div>
+        </div>
+    </body>
+</html>
