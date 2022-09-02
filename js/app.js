@@ -18,6 +18,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     title: 'Название',
                     body: 'Содержание'
                 },
+                userActionPanel: [
+                    {
+                        title: 'Удалить',
+                        cb: function(row) {
+                            console.log(row._i, 'is delete!')
+                        }
+                    },
+                    {
+                        title: 'Редактировать',
+                        cb: function(row){
+                            console.log(row._i, 'has edit!')
+                        }
+                    }
+                ],
                 users: [],
                 posts: [],
                 selectedUser: []

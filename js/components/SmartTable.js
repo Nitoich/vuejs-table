@@ -1,8 +1,11 @@
+// TODO: Сдлеать action панель для всех выбранных строк
+
 export default {
     name: 'SmartTable',
     data() {
         return {
-            selectedRows: []
+            selectedRows: [],
+            actionPanel: undefined
         }
     },
     props: {
@@ -25,17 +28,16 @@ export default {
         stickyHeader: {
             type: Boolean,
             default: true
+        },
+        actionPanelRow: {
+            type: Array,
+            default: []
         }
     },
     methods: {
-        mouseEnterInRow(event, indexElement) {
-
-        },
-        mouseLeaveInRow(event, indexElement) {
-
-        },
         selectRow(event, indexElement) {
-            if(this.canSelectRow) {
+            const tmp = event.composedPath().includes(this.actionPanel);
+            if(this.canSelectRow && event.button == 0 && !tmp) {
                 if (this.multipleSelect) {
 
                     let element = this.$refs.TableRows[indexElement];
@@ -79,6 +81,51 @@ export default {
                     this.$emit('afterSelectRow', Object.assign(this.selectedRows, {_i: indexElement}));
                 }
             }
+        },
+        disableBrowserContentMenu(event, indexElement) {
+            if(this.actionPanelRow.length != 0) {
+                event.preventDefault();
+                if(typeof this.actionPanel != 'undefined') {
+                    this.actionPanel.remove();
+                    this.actionPanel = undefined;
+                }
+                this.actionPanel = document.createElement('div');
+                this.actionPanel.style.cssText = `
+                    width: 100px;
+                    padding: 10px;
+                    background: #FFFFFF;
+                    border: 1px solid #000000;
+                    position: absolute;
+                `;
+
+                this.actionPanelRow.forEach(el => {
+                    let button = document.createElement('button');
+                    button.innerHTML = el.title;
+                    button.style.cssText = `
+                        width: 100%;
+                    `
+                    button.onclick = () => {
+                        el.cb(Object.assign(this.rows[indexElement], {_i: indexElement}));
+                    }
+                    this.actionPanel.append(button)
+                });
+
+                this.actionPanel.style.left = `${event.clientX}px`;
+                this.actionPanel.style.top = `${event.clientY}px`;
+
+                let checker = (event) => {
+                    const tmp = event.composedPath().includes(this.actionPanel);
+                    if(!tmp){
+                        this.actionPanel.remove();
+                        this.actionPanel = undefined;
+                        document.removeEventListener('click', checker)
+                    }
+                }
+
+                document.addEventListener('click', checker)
+
+                this.$refs.TableRows[indexElement].append(this.actionPanel);
+            }
         }
     },
     template: `
@@ -92,7 +139,7 @@ export default {
                 </tr>
             </thead>
             <tbody>
-                <tr ref="TableRows" @click="this.selectRow($event, index)" @mouseleave="this.mouseLeaveInRow($event, index)" @mouseenter="this.mouseEnterInRow($event, index)" v-for="(row, index) in this.rows" style="cursor: pointer; border-collapse: collapse; border: 2px solid rgb(127,127,127);">
+                <tr @contextmenu="this.disableBrowserContentMenu($event, index)" ref="TableRows" @mousedown="this.selectRow($event, index)" v-for="(row, index) in this.rows" style="cursor: pointer; border-collapse: collapse; border: 2px solid rgb(127,127,127);">
                     <th v-if="this.canSelectRow" style="padding: 0 10px; border: 1px solid #AAAAAA; background: #AAAAAA;">
                         <input type="checkbox" disabled>
                     </th>

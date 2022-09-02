@@ -6,3 +6,4 @@ Propertys:
 - canSelectRow
 - multipleSelect
 - stickyHeader
+- actionPanelRow
