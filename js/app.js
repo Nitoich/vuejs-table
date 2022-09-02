@@ -20,17 +20,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 },
                 userActionPanel: [
                     {
-                        title: 'Удалить',
-                        cb: function(row) {
-                            console.log(row._i, 'is delete!')
-                        }
+                        title: 'Получить посты',
+                        cb: this.getPosts
                     },
-                    {
-                        title: 'Редактировать',
-                        cb: function(row){
-                            console.log(row._i, 'has edit!')
-                        }
-                    }
                 ],
                 users: [],
                 posts: [],
@@ -45,9 +37,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 })
         },
         methods: {
-            getPosts() {
-                if(this.selectedUser) {
-                    fetch(`https://jsonplaceholder.typicode.com/users/${this.selectedUser.id}/posts`)
+            getPosts(row) {
+                if(row) {
+                    fetch(`https://jsonplaceholder.typicode.com/users/${row.id}/posts`)
                         .then(res => res.json())
                         .then(res => {
                             this.posts = res;

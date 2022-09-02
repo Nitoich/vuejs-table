@@ -106,6 +106,8 @@ export default {
                     `
                     button.onclick = () => {
                         el.cb(Object.assign(this.rows[indexElement], {_i: indexElement}));
+                        this.actionPanel.remove();
+                        this.actionPanel = undefined;
                     }
                     this.actionPanel.append(button)
                 });
@@ -114,12 +116,15 @@ export default {
                 this.actionPanel.style.top = `${event.clientY}px`;
 
                 let checker = (event) => {
-                    const tmp = event.composedPath().includes(this.actionPanel);
-                    if(!tmp){
-                        this.actionPanel.remove();
-                        this.actionPanel = undefined;
-                        document.removeEventListener('click', checker)
+                    if(this.actionPanel) {
+                        const tmp = event.composedPath().includes(this.actionPanel);
+                        if(!tmp){
+                            this.actionPanel.remove();
+                            this.actionPanel = undefined;
+                            document.removeEventListener('click', checker)
+                        }
                     }
+
                 }
 
                 document.addEventListener('click', checker)
