@@ -112,8 +112,8 @@ export default {
                     this.actionPanel.append(button)
                 });
 
-                this.actionPanel.style.left = `${event.clientX}px`;
-                this.actionPanel.style.top = `${event.clientY}px`;
+                this.actionPanel.style.left = `${event.pageX}px`;
+                this.actionPanel.style.top = `${event.pageY}px`;
 
                 let checker = (event) => {
                     if(this.actionPanel) {
