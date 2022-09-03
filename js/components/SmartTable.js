@@ -70,15 +70,17 @@ export default {
                         el.children[0].children[0].checked = false;
                     });
 
-                    if(this.selectedRows._i != undefined && this.selectedRows._i == indexElement) {
-                        this.selectedRows = [];
+                    if(this.selectedRows._i == indexElement) {
+                        this.selectedRows = {};
                         elements[indexElement].children[0].children[0].checked = false;
+                        this.$emit('update:selectedRows', this.selectedRows);
+                        this.$emit('afterSelectRow', this.selectedRows);
                     } else {
                         elements[indexElement].children[0].children[0].checked = true;
                         this.selectedRows = this.rows[indexElement];
+                        this.$emit('update:selectedRows', Object.assign(this.selectedRows, {_i: indexElement}));
+                        this.$emit('afterSelectRow', Object.assign(this.selectedRows, {_i: indexElement}));
                     }
-                    this.$emit('update:selectedRows', Object.assign(this.selectedRows, {_i: indexElement}));
-                    this.$emit('afterSelectRow', Object.assign(this.selectedRows, {_i: indexElement}));
                 }
             }
         },
