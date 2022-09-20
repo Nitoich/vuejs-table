@@ -29,7 +29,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     }
                 ],
                 users: [],
-                posts: [],
+                posts: [
+                    {
+                        userId: '<a href="google.com">Поисковик</a>',
+                        id: 'ID',
+                        title: 'Название',
+                        body: 'Содержание'
+                    }
+                ],
                 selectedUser: []
             }
         },

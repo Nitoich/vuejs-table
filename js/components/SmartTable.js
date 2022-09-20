@@ -49,11 +49,13 @@ export default {
                 .then(res => {
                     this.items = res;
                 })
+        } else {
+            this.items = this.rows;
         }
     },
     watch: {
         rows: function() {
-            if(!this.originDataUrl) {
+            if(this.originDataUrl == false) {
                 this.items = this.rows
             }
         }
@@ -187,8 +189,8 @@ export default {
                     <th v-if="this.canSelectRow" style="padding: 0 10px; border: 1px solid #AAAAAA; background: #AAAAAA;">
                         <input type="checkbox" disabled>
                     </th>
-                    <th v-for="(column, key) in this.columns" style="padding: 10px; border: 1px solid #AAAAAA; background: rgba(200,200,200, 1)">
-                        {{ row[key] }}
+                    <th v-html="row[key]" v-for="(column, key) in this.columns" style="padding: 10px; border: 1px solid #AAAAAA; background: rgba(200,200,200, 1)">
+                    
                     </th>
                 </tr>
             </tbody>
