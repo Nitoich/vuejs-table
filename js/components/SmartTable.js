@@ -5,7 +5,8 @@ export default {
     data() {
         return {
             selectedRows: [],
-            actionPanel: undefined
+            actionPanel: undefined,
+            items: []
         }
     },
     props: {
@@ -32,9 +33,45 @@ export default {
         actionPanelRow: {
             type: Array,
             default: []
+        },
+        originDataUrl: {
+            default: false
+        }
+    },
+    mounted() {
+        console.log(this.originDataUrl)
+        if(this.originDataUrl) {
+            fetch(this.originDataUrl, {
+                method: 'get',
+                credentials: 'include'
+            })
+                .then(res => res.json())
+                .then(res => {
+                    this.items = res;
+                })
+        }
+    },
+    watch: {
+        rows: function() {
+            if(!this.originDataUrl) {
+                this.items = this.rows
+            }
         }
     },
     methods: {
+        refreshData() {
+            this.items = [];
+            if(this.originDataUrl) {
+                fetch(this.originDataUrl, {
+                    method: 'get',
+                    credentials: 'include'
+                })
+                    .then(res => res.json())
+                    .then(res => {
+                        this.items = res;
+                    })
+            }
+        },
         selectRow(event, indexElement) {
             const tmp = event.composedPath().includes(this.actionPanel);
             if(this.canSelectRow && event.button == 0 && !tmp) {
@@ -57,7 +94,7 @@ export default {
 
                         }
                     } else {
-                        this.selectedRows.push(Object.assign(this.rows[indexElement], {_i: indexElement}));
+                        this.selectedRows.push(Object.assign(this.items[indexElement], {_i: indexElement}));
                     }
                     element.children[0].children[0].checked = !element.children[0].children[0].checked;
                     this.$emit('update:selectedRows', this.selectedRows);
@@ -77,7 +114,7 @@ export default {
                         this.$emit('afterSelectRow', this.selectedRows);
                     } else {
                         elements[indexElement].children[0].children[0].checked = true;
-                        this.selectedRows = this.rows[indexElement];
+                        this.selectedRows = this.items[indexElement];
                         this.$emit('update:selectedRows', Object.assign(this.selectedRows, {_i: indexElement}));
                         this.$emit('afterSelectRow', Object.assign(this.selectedRows, {_i: indexElement}));
                     }
@@ -107,7 +144,7 @@ export default {
                         width: 100%;
                     `
                     button.onclick = () => {
-                        el.cb(Object.assign(this.rows[indexElement], {_i: indexElement}));
+                        el.cb(Object.assign(this.items[indexElement], {_i: indexElement}), this.refreshData);
                         this.actionPanel.remove();
                         this.actionPanel = undefined;
                     }
@@ -146,7 +183,7 @@ export default {
                 </tr>
             </thead>
             <tbody>
-                <tr @contextmenu="this.disableBrowserContentMenu($event, index)" ref="TableRows" @mousedown="this.selectRow($event, index)" v-for="(row, index) in this.rows" style="cursor: pointer; border-collapse: collapse; border: 2px solid rgb(127,127,127);">
+                <tr @contextmenu="this.disableBrowserContentMenu($event, index)" ref="TableRows" @mousedown="this.selectRow($event, index)" v-for="(row, index) in this.items" style="cursor: pointer; border-collapse: collapse; border: 2px solid rgb(127,127,127);">
                     <th v-if="this.canSelectRow" style="padding: 0 10px; border: 1px solid #AAAAAA; background: #AAAAAA;">
                         <input type="checkbox" disabled>
                     </th>

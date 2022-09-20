@@ -23,20 +23,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
                         title: 'Получить посты',
                         cb: this.getPosts
                     },
+                    {
+                        title: 'Обновить список',
+                        cb: this.refreshUsers
+                    }
                 ],
                 users: [],
                 posts: [],
                 selectedUser: []
             }
         },
-        created() {
-            fetch('https://jsonplaceholder.typicode.com/users')
-                .then(res => res.json())
-                .then(res => {
-                    this.users = res;
-                })
-        },
         methods: {
+            refreshUsers(row, refresh) {
+                refresh();
+            },
             getPosts(row) {
                 if(row) {
                     fetch(`https://jsonplaceholder.typicode.com/users/${row.id}/posts`)

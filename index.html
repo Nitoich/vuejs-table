@@ -24,14 +24,14 @@
         <div id="app">
             <div class="users-table">
                 <h1>Пользователи</h1>
-                <smart-table
+                <smart-table ref="usersTable"
                         :columns="this.columnsUserTable"
-                        :rows="this.users"
                         v-model:selected-rows="this.selectedUser"
                         @after-select-row="this.getPosts"
                         :multiple-select="false"
                         :sticky-header="false"
                         :action-panel-row="this.userActionPanel"
+                        :origin-data-url="'https://jsonplaceholder.typicode.com/users'"
                 />
             </div>
             <div class="posts-table">
